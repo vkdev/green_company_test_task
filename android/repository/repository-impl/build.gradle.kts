@@ -35,7 +35,6 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
     api(project(":repository:repository-api"))
 
     testImplementation(libs.junit)
