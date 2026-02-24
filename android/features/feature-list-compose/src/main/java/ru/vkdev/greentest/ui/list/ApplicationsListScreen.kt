@@ -50,7 +50,7 @@ internal fun ApplicationsListScreenContent(
         viewModel.startLoading()
     }
 
-    val state by viewModel.iuState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier

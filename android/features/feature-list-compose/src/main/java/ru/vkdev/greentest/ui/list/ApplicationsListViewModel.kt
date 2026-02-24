@@ -20,7 +20,7 @@ internal class ApplicationsListViewModel(
 
     private val allApplications = MutableStateFlow<List<UiAppInfo>>(emptyList())
 
-    val iuState: StateFlow<UiState>
+    val uiState: StateFlow<UiState>
         field = MutableStateFlow<UiState>(
             UiState(
                 applications = emptyList(), runnableOnly = false
@@ -30,7 +30,7 @@ internal class ApplicationsListViewModel(
     init {
         viewModelScope.launch {
             allApplications.collect {
-                iuState.update {
+                uiState.update {
                     it.copy(
                         applications = filterApplications(it.runnableOnly)
                     )
@@ -54,7 +54,7 @@ internal class ApplicationsListViewModel(
     fun handleIntent(intent: Intent) {
         when (intent) {
             is ShowRunnableOnlyIntent -> {
-                iuState.update {
+                uiState.update {
                     it.copy(
                         runnableOnly = intent.isRunnableOnly, applications = filterApplications(intent.isRunnableOnly)
                     )
