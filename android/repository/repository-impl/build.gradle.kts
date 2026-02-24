@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.hashmaker"
+    namespace = "ru.vkdev.repository"
     compileSdk {
         version = release(36)
     }
@@ -36,6 +36,7 @@ kotlin {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    api(project(":repository:repository-api"))
 
     testImplementation(libs.junit)
 }
