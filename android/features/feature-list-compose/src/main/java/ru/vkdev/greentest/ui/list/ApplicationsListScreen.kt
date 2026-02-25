@@ -1,6 +1,6 @@
 package ru.vkdev.greentest.ui.list
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,13 +27,17 @@ import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import ru.vkdev.greentest.ui_common.dimen.DimensList
 import ru.vkdev.greentest.ui_common.dimen.DimensScreen
-import ru.vkdev.greentest.ui_common.drawable.toImageBitmap
+
+private val iconSize = 36.dp
+private val listItemHeight = 46.dp
 
 @Composable
 fun ApplicationsListScreen(paddingValues: PaddingValues) {
@@ -46,8 +50,7 @@ fun ApplicationsListScreen(paddingValues: PaddingValues) {
 
 @Composable
 internal fun ApplicationsListScreenContent(
-    modifier: Modifier,
-    viewModel: ApplicationsListViewModel = koinViewModel(key = "ApplicationsListScreen")
+    modifier: Modifier, viewModel: ApplicationsListViewModel = koinViewModel(key = "ApplicationsListScreen")
 ) {
 
     LaunchedEffect(viewModel) {
@@ -75,9 +78,7 @@ internal fun ApplicationsListScreenContent(
             verticalArrangement = Arrangement.spacedBy(DimensList.verticalSpacing)
         ) {
             items(
-                items = state.applications,
-                key = { it.packageId }
-            ) { app ->
+                items = state.applications, key = { it.packageId }) { app ->
                 ListItem(item = app, requestDrawable = { packageId ->
                     viewModel.requestAppIcon(packageId)
                 })
@@ -87,39 +88,45 @@ internal fun ApplicationsListScreenContent(
 }
 
 @Composable
-internal fun ListItem(item: ApplicationsListViewModel.UiAppInfo, requestDrawable: suspend (String) -> Drawable?) {
+internal fun ListItem(item: ApplicationsListViewModel.UiAppInfo, requestDrawable: suspend (String) -> Bitmap?) {
     Card(
-        Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(6.dp)
+        Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(DimensList.itemCardElevation)
     ) {
         Row(
             Modifier
-                .heightIn(40.dp)
-                .padding(vertical = 5.dp, horizontal = 8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+                .heightIn(listItemHeight)
+                .padding(vertical = DimensList.innerPaddingVertical, horizontal = DimensList.innerPaddingHorizontal)
+                .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
 
-            val drawable by produceState<Drawable?>(initialValue = null, item.packageId) {
+            val bitmap by produceState<Bitmap?>(initialValue = null, item.packageId) {
                 value = requestDrawable(item.packageId)
             }
 
-            if (drawable != null) {
-                val imageBitmap = remember(item.packageId) { drawable!!.toImageBitmap() }
+            if (bitmap != null) {
+                val imageBitmap = remember(item.packageId) { bitmap!!.asImageBitmap() }
                 Image(
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(iconSize),
                     bitmap = imageBitmap,
                     contentDescription = stringResource(R.string.content_desc_app_icon)
                 )
             } else {
-                Spacer(modifier = Modifier.size(36.dp))
+                Spacer(modifier = Modifier.size(iconSize))
             }
 
             Spacer(Modifier.width(10.dp))
 
-            Column() {
-                Text(item.appName)
-                Text(item.packageId)
+            Column {
+                Text(
+                    text = item.appName,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    item.packageId,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

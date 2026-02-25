@@ -1,10 +1,13 @@
 package ru.vkdev.greentest.di
 
 import android.app.Application
+import android.graphics.Bitmap
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import ru.vkdev.greentest.cacheapi.InmemoryLruCache
+import ru.vkdev.greentest.cache.BitmapLruCache
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.ui.list.di.featureApplicationsListViewModelModule
 import ru.vkdev.repository.RepositoryImpl
@@ -19,6 +22,7 @@ fun Application.startKoinIfNotStarted() {
 
         modules(
 
+            cacheModule,
             repositoryModule,
 
             //feature modules
@@ -27,6 +31,10 @@ fun Application.startKoinIfNotStarted() {
     }
 }
 
+val cacheModule = module {
+    single<InmemoryLruCache<String, Bitmap>> { BitmapLruCache() }
+}
+
 val repositoryModule = module {
-    single<Repository> { RepositoryImpl() }
+    single<Repository> { RepositoryImpl(get()) }
 }

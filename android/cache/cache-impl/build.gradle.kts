@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.repository"
+    namespace = "ru.vkdev.greentest.cache"
     compileSdk {
         version = release(36)
     }
@@ -33,10 +33,6 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
-
 dependencies {
-    api(project(":repository:repository-api"))
     api(project(":cache:cache-api"))
-
-    testImplementation(libs.junit)
 }

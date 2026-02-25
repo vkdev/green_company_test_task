@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(project(":repository:repository-impl"))
     implementation(project(":features:feature-list-compose"))
+    implementation(project(":cache:cache-impl"))
 
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.compose.runtime.tracing)
