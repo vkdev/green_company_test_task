@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="list__content_padding">10.dp</dimen>
-    <dimen name="list__vertical_spacing">15.dp</dimen>
-</resources>
