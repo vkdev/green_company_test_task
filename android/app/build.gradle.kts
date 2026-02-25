@@ -47,15 +47,16 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
-    implementation(project(":repository:repository-impl"))
-    implementation(project(":features:feature-list-compose"))
 
     implementation(platform(libs.androidx.compose.bom))
-
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)
+    implementation(project(":repository:repository-impl"))
+    implementation(project(":features:feature-list-compose"))
+
     testImplementation(libs.junit)
+    debugImplementation(libs.androidx.compose.runtime.tracing)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

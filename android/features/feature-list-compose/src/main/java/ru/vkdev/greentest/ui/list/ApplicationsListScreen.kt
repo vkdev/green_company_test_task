@@ -1,6 +1,7 @@
 package ru.vkdev.greentest.ui.list
 
 import android.graphics.drawable.Drawable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,13 +24,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import org.koin.compose.viewmodel.koinViewModel
+import ru.vkdev.greentest.ui_common.dimen.DimensList
+import ru.vkdev.greentest.ui_common.dimen.DimensScreen
+import ru.vkdev.greentest.ui_common.drawable.toImageBitmap
 
 @Composable
 fun ApplicationsListScreen(paddingValues: PaddingValues) {
@@ -53,8 +57,7 @@ internal fun ApplicationsListScreenContent(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
-        modifier = modifier
-            .padding(horizontal = 10.dp)
+        modifier = modifier.padding(horizontal = DimensScreen.paddingHorizontal)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = state.runnableOnly, onCheckedChange = { checked ->
@@ -68,8 +71,8 @@ internal fun ApplicationsListScreenContent(
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp)
+            contentPadding = PaddingValues(top = DimensList.contentPadding),
+            verticalArrangement = Arrangement.spacedBy(DimensList.verticalSpacing)
         ) {
             items(
                 items = state.applications,
@@ -101,11 +104,16 @@ internal fun ListItem(item: ApplicationsListViewModel.UiAppInfo, requestDrawable
                 value = requestDrawable(item.packageId)
             }
 
-            AsyncImage(
-                modifier = Modifier.size(36.dp),
-                model = drawable,
-                contentDescription = null
-            )
+            if (drawable != null) {
+                val imageBitmap = remember(item.packageId) { drawable!!.toImageBitmap() }
+                Image(
+                    modifier = Modifier.size(36.dp),
+                    bitmap = imageBitmap,
+                    contentDescription = stringResource(R.string.content_desc_app_icon)
+                )
+            } else {
+                Spacer(modifier = Modifier.size(36.dp))
+            }
 
             Spacer(Modifier.width(10.dp))
 

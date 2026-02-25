@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.greentest.ui.list"
+    namespace = "ru.vkdev.greentest.ui_common"
     compileSdk {
         version = release(36)
     }
@@ -32,7 +32,6 @@ android {
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
-        freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
     }
 }
 
@@ -40,17 +39,4 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.material3)
-
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.android)
-    implementation(libs.koin.compose)
-    implementation(libs.koin.compose.viewmodel)
-
-    implementation(project(":repository:repository-api"))
-    implementation(project(":ui-common"))
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
 }
