@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.vkdev.greentest.ui_common.dimen.DimensList
 import ru.vkdev.greentest.ui_common.dimen.DimensScreen
 
-private val iconSize = 36.dp
+private val iconSize = 42.dp
 private val listItemHeight = 46.dp
 
 @Composable
@@ -61,6 +62,8 @@ internal fun ApplicationsListScreenContent(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val maxIconSize = with(LocalDensity.current) { iconSize.roundToPx() }
+
     when (state) {
         is ApplicationsListViewModel.UiState.Loading -> ApplicationsListLoading(modifier = modifier)
         is ApplicationsListViewModel.UiState.Error -> ApplicationsListError(modifier = modifier)
@@ -71,7 +74,7 @@ internal fun ApplicationsListScreenContent(
                 viewModel.handleIntent(ApplicationsListViewModel.Intent.ShowRunnableOnlyIntent(onlyRunnable))
             },
             requestAppIcon = { packageId ->
-                viewModel.requestAppIcon(packageId)
+                viewModel.requestAppIcon(packageId = packageId, maxSize = maxIconSize)
             }
         )
     }

@@ -10,5 +10,5 @@ interface Repository {
 
     fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo>
 
-    fun imageIcon(context: Context, packageId: String): Bitmap?
+    fun imageIcon(context: Context, packageId: String, maxSize: Int): Bitmap?
 }

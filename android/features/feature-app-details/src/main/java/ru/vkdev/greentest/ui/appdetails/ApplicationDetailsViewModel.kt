@@ -52,8 +52,8 @@ internal class ApplicationDetailsViewModel(
         }
     }
 
-    suspend fun requestAppIcon(packageId: String) = withContext(Dispatchers.IO) {
-        repository.imageIcon(context = application, packageId)
+    suspend fun requestAppIcon(packageId: String, maxSize: Int) = withContext(IO) {
+        repository.imageIcon(context = application, packageId = packageId, maxSize = maxSize)
     }
 
     fun handleIntent(intent: Intent) {

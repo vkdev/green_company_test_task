@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,6 +59,7 @@ internal fun ApplicationDetailsScreenContent(
     }
 
     val state by viewModel.applicationDetails.collectAsStateWithLifecycle()
+    val maxIconSize = with(LocalDensity.current) { iconSize.roundToPx() }
 
     when (state) {
         is ApplicationDetailsViewModel.UiState.Loading -> ApplicationDetailsLoading(modifier = modifier)
@@ -65,7 +67,7 @@ internal fun ApplicationDetailsScreenContent(
         is ApplicationDetailsViewModel.UiState.Success -> ApplicationDetailsData(
             modifier = modifier,
             details = (state as ApplicationDetailsViewModel.UiState.Success).details,
-            requestDrawable = { packageId -> viewModel.requestAppIcon(packageId) },
+            requestDrawable = { packageId -> viewModel.requestAppIcon(packageId = packageId, maxSize = maxIconSize) },
             onOpenClick = {
                 viewModel.handleIntent(
                     ApplicationDetailsViewModel.Intent.LaunchAppIntent(

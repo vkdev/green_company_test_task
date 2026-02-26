@@ -6,7 +6,6 @@ import androidx.compose.runtime.Stable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -72,8 +71,8 @@ internal class ApplicationsListViewModel(
         }
     }
 
-    suspend fun requestAppIcon(packageId: String) = withContext(Dispatchers.IO) {
-        repository.imageIcon(context = application, packageId)
+    suspend fun requestAppIcon(packageId: String, maxSize: Int) = withContext(IO) {
+        repository.imageIcon(context = application, packageId = packageId, maxSize = maxSize)
     }
 
     private fun filterApplications(isRunnableOnly: Boolean) =

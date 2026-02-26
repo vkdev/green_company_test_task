@@ -6,6 +6,7 @@ import ru.vkdev.greentest.cacheapi.InmemoryLruCache
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.AppInfo
 import ru.vkdev.repository.source.AppInfoDataLoader
+import ru.vkdev.repository.source.resizeBitmapIfNeeded
 import ru.vkdev.repository.source.toBitmap
 
 class RepositoryImpl(
@@ -23,12 +24,14 @@ class RepositoryImpl(
         AppInfoDataLoader.installedAppBaseInfo(context, packageId)
     }
 
-    override fun imageIcon(context: Context, packageId: String): Bitmap? {
-        bitmapCache.get(packageId)?.let { return it }
-        synchronized(lockFor(packageId)) {
-            bitmapCache.get(packageId)?.let { return it }
-            val newIcon = AppInfoDataLoader.imageIcon(context, packageId)?.toBitmap()?.also {
-                bitmapCache.put(packageId, it)
+    override fun imageIcon(context: Context, packageId: String, maxSize: Int): Bitmap? {
+        val hash = "${packageId}__size_${maxSize}"
+
+        bitmapCache.get(hash)?.let { return it }
+        synchronized(lockFor(hash)) {
+            bitmapCache.get(hash)?.let { return it }
+            val newIcon = AppInfoDataLoader.imageIcon(context, packageId)?.toBitmap()?.resizeBitmapIfNeeded(maxSize)?.also {
+                bitmapCache.put(hash, it)
             }
             return newIcon
         }
