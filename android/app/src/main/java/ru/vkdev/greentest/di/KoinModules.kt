@@ -9,6 +9,7 @@ import org.koin.dsl.module
 import ru.vkdev.greentest.cacheapi.InmemoryLruCache
 import ru.vkdev.greentest.cache.BitmapLruCache
 import ru.vkdev.greentest.repository_api.Repository
+import ru.vkdev.greentest.ui.appdetails.di.featureApplicationDetailsModule
 import ru.vkdev.greentest.ui.list.di.featureApplicationsListViewModelModule
 import ru.vkdev.repository.RepositoryImpl
 
@@ -26,7 +27,8 @@ fun Application.startKoinIfNotStarted() {
             repositoryModule,
 
             //feature modules
-            featureApplicationsListViewModelModule
+            featureApplicationsListViewModelModule,
+            featureApplicationDetailsModule
         )
     }
 }

@@ -14,10 +14,18 @@ internal object AppInfoDataLoader {
         val packageManager = context.packageManager
         val packages = packageManager.getInstalledPackages(0)
 
-        return packages.map { buildAppInfo(packageInfo = it, packageManager = packageManager) }
+        return packages.map { buildAppInfo(packageManager = packageManager, packageInfo = it) }
     }
 
-    private fun buildAppInfo(packageInfo: PackageInfo, packageManager: PackageManager): AppInfo {
+    @Throws(Exception::class)
+    fun installedAppBaseInfo(context: Context, packageId: String): AppInfo {
+        val packageManager = context.packageManager
+        val packageInfo = packageManager.getPackageInfo("com.example.app", 0)
+
+        return buildAppInfo(packageManager = packageManager, packageInfo = packageInfo)
+    }
+
+    private fun buildAppInfo(packageManager: PackageManager, packageInfo: PackageInfo): AppInfo {
         val appName = packageInfo.applicationInfo?.let {
             packageManager.getApplicationLabel(it).toString().ifEmpty { null }
         } ?: packageInfo.packageName
@@ -39,7 +47,7 @@ internal object AppInfoDataLoader {
             appName = appName,
             version = versionName,
             packageId = packageId,
-            versionLong = versionLong,
+            versionCode = versionLong,
             hasLaunchedActivity = hasLaunchedActivity
         )
     }

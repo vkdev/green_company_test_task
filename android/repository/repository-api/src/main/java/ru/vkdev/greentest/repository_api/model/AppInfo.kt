@@ -4,6 +4,6 @@ data class AppInfo(
     val appName: String?,
     val version: String?,
     val packageId: String,
-    val versionLong: Long?,
+    val versionCode: Long?,
     val hasLaunchedActivity: Boolean,
 )

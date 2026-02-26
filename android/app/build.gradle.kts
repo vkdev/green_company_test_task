@@ -53,7 +53,8 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)
     implementation(project(":repository:repository-impl"))
-    implementation(project(":features:feature-list-compose"))
+    implementation(project(":features:feature-applications-list"))
+    implementation(project(":features:feature-app-details"))
     implementation(project(":cache:cache-impl"))
 
     testImplementation(libs.junit)

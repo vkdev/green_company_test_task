@@ -8,5 +8,7 @@ interface Repository {
 
     fun installedAppsBaseInfo(context: Context): List<AppInfo>
 
+    fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo>
+
     fun imageIcon(context: Context, packageId: String): Bitmap?
 }
