@@ -60,7 +60,7 @@ internal fun ApplicationsListScreenContent(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
-        modifier = modifier.padding(horizontal = DimensScreen.paddingHorizontal)
+        modifier = modifier.padding(horizontal = DimensScreen.paddingHorizontal, vertical = DimensScreen.paddingVertical)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Checkbox(checked = state.runnableOnly, onCheckedChange = { checked ->

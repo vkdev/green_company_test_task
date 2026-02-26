@@ -20,7 +20,7 @@ internal object AppInfoDataLoader {
     @Throws(Exception::class)
     fun installedAppBaseInfo(context: Context, packageId: String): AppInfo {
         val packageManager = context.packageManager
-        val packageInfo = packageManager.getPackageInfo("com.example.app", 0)
+        val packageInfo = packageManager.getPackageInfo(packageId, 0)
 
         return buildAppInfo(packageManager = packageManager, packageInfo = packageInfo)
     }

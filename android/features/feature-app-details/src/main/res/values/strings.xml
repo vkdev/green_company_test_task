@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="screen__app_loading_error">Loading error</string>
+    <string name="item__package_id">Package: %1$s</string>
+    <string name="item__app_version">Version: %1$s</string>
+    <string name="item__app_version_code">Version code: %1$d</string>
+    <string name="item__app_hash_sum">Hash sum: %1$s</string>
+    <string name="button__open_app">Open</string>
+    <string name="content_desc_app_icon">Application icon</string>
+</resources>

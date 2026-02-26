@@ -4,5 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 object DimensScreen {
-    val paddingHorizontal @Composable get() = 8.dp
+    val paddingHorizontal @Composable get() = 16.dp
+    val paddingVertical @Composable get() = 8.dp
 }
