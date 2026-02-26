@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,12 +61,35 @@ internal fun ApplicationsListScreenContent(
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    when (state) {
+        is ApplicationsListViewModel.UiState.Loading -> ApplicationsListLoading(modifier = modifier)
+        is ApplicationsListViewModel.UiState.Error -> ApplicationsListError(modifier = modifier)
+        is ApplicationsListViewModel.UiState.ScreenData -> ApplicationsListData(
+            modifier = modifier,
+            (state as ApplicationsListViewModel.UiState.ScreenData),
+            onShowRunnableOnly = { onlyRunnable ->
+                viewModel.handleIntent(ApplicationsListViewModel.Intent.ShowRunnableOnlyIntent(onlyRunnable))
+            },
+            requestAppIcon = { packageId ->
+                viewModel.requestAppIcon(packageId)
+            }
+        )
+    }
+}
+
+@Composable
+internal fun ApplicationsListData(
+    modifier: Modifier,
+    data: ApplicationsListViewModel.UiState.ScreenData,
+    requestAppIcon: suspend (String) -> Bitmap?,
+    onShowRunnableOnly: (Boolean) -> Unit
+) {
     Column(
         modifier = modifier.padding(horizontal = DimensScreen.paddingHorizontal, vertical = DimensScreen.paddingVertical)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = state.runnableOnly, onCheckedChange = { checked ->
-                viewModel.handleIntent(ApplicationsListViewModel.ShowRunnableOnlyIntent(checked))
+            Checkbox(checked = data.runnableOnly, onCheckedChange = { checked ->
+                onShowRunnableOnly(checked)
             })
             Spacer(Modifier.width(5.dp))
             Text(stringResource(R.string.runnable_only))
@@ -78,12 +103,39 @@ internal fun ApplicationsListScreenContent(
             verticalArrangement = Arrangement.spacedBy(DimensList.verticalSpacing)
         ) {
             items(
-                items = state.applications, key = { it.packageId }) { app ->
+                items = data.applications, key = { it.packageId }) { app ->
                 ListItem(item = app, requestDrawable = { packageId ->
-                    viewModel.requestAppIcon(packageId)
+                    requestAppIcon(packageId)
                 })
             }
         }
+    }
+}
+
+@Composable
+internal fun ApplicationsListLoading(modifier: Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+internal fun ApplicationsListError(modifier: Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = DimensScreen.paddingHorizontal, vertical = DimensScreen.paddingVertical),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(R.string.screen__app_loading_error),
+            color = MaterialTheme.colorScheme.error
+        )
     }
 }
 

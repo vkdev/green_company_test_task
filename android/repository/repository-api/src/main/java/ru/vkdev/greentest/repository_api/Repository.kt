@@ -6,7 +6,7 @@ import ru.vkdev.greentest.repository_api.model.AppInfo
 
 interface Repository {
 
-    fun installedAppsBaseInfo(context: Context): List<AppInfo>
+    fun installedAppsBaseInfo(context: Context): Result<List<AppInfo>>
 
     fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo>
 

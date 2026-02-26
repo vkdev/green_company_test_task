@@ -66,7 +66,13 @@ internal fun ApplicationDetailsScreenContent(
             modifier = modifier,
             details = (state as ApplicationDetailsViewModel.UiState.Success).details,
             requestDrawable = { packageId -> viewModel.requestAppIcon(packageId) },
-            onOpenClick = { viewModel.launchApp((state as ApplicationDetailsViewModel.UiState.Success).details.packageId) }
+            onOpenClick = {
+                viewModel.handleIntent(
+                    ApplicationDetailsViewModel.Intent.LaunchAppIntent(
+                        (state as ApplicationDetailsViewModel.UiState.Success).details.packageId
+                    )
+                )
+            }
         )
     }
 }

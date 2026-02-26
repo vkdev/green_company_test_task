@@ -2,4 +2,5 @@
 <resources>
     <string name="runnable_only">Runnable Only</string>
     <string name="content_desc_app_icon">Application icon</string>
+    <string name="screen__app_loading_error">Loading error</string>
 </resources>

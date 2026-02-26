@@ -22,17 +22,19 @@ internal class ApplicationDetailsViewModel(
     val packageId: String
 ) : AndroidViewModel(app) {
 
+    private val logTag = this::class.simpleName
+
     val applicationDetails: StateFlow<UiState>
         field = MutableStateFlow<UiState>(UiState.Loading)
 
     fun startLoading() {
         viewModelScope.launch(IO) {
 
-            val appsResult = repository.installedAppBaseInfo(application, packageId).onFailure {
-                Log.e(javaClass.simpleName, it.stackTraceToString())
-            }
-
             applicationDetails.value = UiState.Loading
+
+            val appsResult = repository.installedAppBaseInfo(application, packageId).onFailure {
+                Log.e(logTag, it.stackTraceToString())
+            }
 
             appsResult.onFailure {
                 applicationDetails.value = UiState.Error
@@ -50,17 +52,25 @@ internal class ApplicationDetailsViewModel(
         }
     }
 
-    fun launchApp(packageId: String) {
-        applicationLauncher(packageId)
-    }
-
     suspend fun requestAppIcon(packageId: String) = withContext(Dispatchers.IO) {
         repository.imageIcon(context = application, packageId)
+    }
+
+    fun handleIntent(intent: Intent) {
+        when (intent) {
+            is Intent.LaunchAppIntent -> {
+                applicationLauncher(intent.packageId)
+            }
+        }
     }
 
     internal sealed interface UiState {
         object Loading : UiState
         object Error : UiState
         data class Success(val details: UiAppDetails) : UiState
+    }
+
+    sealed interface Intent {
+        data class LaunchAppIntent(val packageId: String) : Intent
     }
 }

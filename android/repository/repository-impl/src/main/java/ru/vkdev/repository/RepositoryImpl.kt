@@ -13,13 +13,10 @@ class RepositoryImpl(
 ) : Repository {
 
     //эти операции не suspend, так как по сути они все равно являются блокирующими
-    //todo использовать Result
-    override fun installedAppsBaseInfo(context: Context) = AppInfoDataLoader.installedAppsBaseInfo(context)
+    override fun installedAppsBaseInfo(context: Context): Result<List<AppInfo>> = runCatching { AppInfoDataLoader.installedAppsBaseInfo(context) }
 
-    override fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo> {
-        return runCatching {
-            AppInfoDataLoader.installedAppBaseInfo(context, packageId)
-        }
+    override fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo> = runCatching {
+        AppInfoDataLoader.installedAppBaseInfo(context, packageId)
     }
 
     override fun imageIcon(context: Context, packageId: String): Bitmap? {

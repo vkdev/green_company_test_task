@@ -1,6 +1,7 @@
 package ru.vkdev.greentest.ui.list
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
@@ -18,50 +19,54 @@ internal class ApplicationsListViewModel(
     private val repository: Repository, app: Application
 ) : AndroidViewModel(app) {
 
-    private val allApplications = MutableStateFlow<List<UiAppInfo>>(emptyList())
+    private val logTag = this::class.simpleName
+
+    private var allApplications: List<UiAppInfo> = emptyList()
 
     val uiState: StateFlow<UiState>
-        field = MutableStateFlow<UiState>(
-            UiState(
-                applications = emptyList(), runnableOnly = false
-            )
-        )
+        field = MutableStateFlow<UiState>(UiState.Loading)
 
-    init {
-        viewModelScope.launch {
-            allApplications.collect {
-                uiState.update {
-                    it.copy(
-                        applications = filterApplications(it.runnableOnly)
-                    )
-                }
-            }
+    private fun updateStateWithData(runnableOnly: Boolean? = null) {
+        uiState.update { existing ->
+            val state = existing as? UiState.ScreenData ?: UiState.ScreenData(emptyList(), false)
+
+            state.copy(
+                applications = filterApplications(runnableOnly ?: state.runnableOnly),
+                runnableOnly = runnableOnly ?: state.runnableOnly
+            )
         }
     }
 
     fun startLoading() {
+        uiState.value = UiState.Loading
         viewModelScope.launch(IO) {
-            val applications = repository.installedAppsBaseInfo(application).map {
-                UiAppInfo(
-                    appName = it.appName ?: it.packageId, packageId = it.packageId, hasLaunchedActivity = it.hasLaunchedActivity
-                )
-            }.sortedBy { it.appName }
+            repository.installedAppsBaseInfo(application)
+                .onFailure { error ->
+                    Log.e(logTag, error.stackTraceToString())
+                    allApplications = emptyList()
 
-            allApplications.emit(applications)
+                    uiState.emit(UiState.Error)
+                }.onSuccess { result ->
+                    allApplications = result.map {
+                        UiAppInfo(appName = it.appName ?: it.packageId, packageId = it.packageId, hasLaunchedActivity = it.hasLaunchedActivity)
+                    }.sortedBy { it.appName }
+
+                    updateStateWithData()
+                }
         }
     }
 
     fun handleIntent(intent: Intent) {
         when (intent) {
-            is ShowRunnableOnlyIntent -> {
-                uiState.update {
-                    it.copy(
-                        runnableOnly = intent.isRunnableOnly, applications = filterApplications(intent.isRunnableOnly)
-                    )
+            is Intent.ShowRunnableOnlyIntent -> {
+                if (uiState.value is UiState.ScreenData) {
+                    updateStateWithData(intent.isRunnableOnly)
+                } else {
+                    Log.w(logTag, "Invalid UI state")
                 }
             }
 
-            is OpenDetailsScreenIntent -> {
+            is Intent.OpenDetailsScreenIntent -> {
                 //todo
             }
         }
@@ -72,19 +77,25 @@ internal class ApplicationsListViewModel(
     }
 
     private fun filterApplications(isRunnableOnly: Boolean) =
-        if (isRunnableOnly) allApplications.value.filter { it.hasLaunchedActivity } else allApplications.value
+        if (isRunnableOnly) allApplications.filter { it.hasLaunchedActivity } else allApplications
 
     @Stable
     internal data class UiAppInfo(
         val appName: String, val packageId: String, val hasLaunchedActivity: Boolean
     )
 
-    @Stable
-    internal data class UiState(
-        val applications: List<UiAppInfo>, val runnableOnly: Boolean
-    )
+    internal sealed interface UiState {
+        object Loading : UiState
+        object Error : UiState
 
-    sealed interface Intent
-    data class ShowRunnableOnlyIntent(val isRunnableOnly: Boolean) : Intent
-    data class OpenDetailsScreenIntent(val uiAppInfo: UiAppInfo) : Intent
+        @Stable
+        data class ScreenData(
+            val applications: List<UiAppInfo>, val runnableOnly: Boolean
+        ) : UiState
+    }
+
+    sealed interface Intent {
+        data class ShowRunnableOnlyIntent(val isRunnableOnly: Boolean) : Intent
+        data class OpenDetailsScreenIntent(val uiAppInfo: UiAppInfo) : Intent
+    }
 }
