@@ -12,6 +12,10 @@ class RepositoryImpl(
     private val bitmapCache: InmemoryLruCache<String, Bitmap>
 ) : Repository {
 
+    private val iconLoadLocks = Array(32) { Any() }
+
+    private fun lockFor(packageId: String): Any = iconLoadLocks[packageId.hashCode().and(0x0F)]
+
     //эти операции не suspend, так как по сути они все равно являются блокирующими
     override fun installedAppsBaseInfo(context: Context): Result<List<AppInfo>> = runCatching { AppInfoDataLoader.installedAppsBaseInfo(context) }
 
@@ -20,18 +24,13 @@ class RepositoryImpl(
     }
 
     override fun imageIcon(context: Context, packageId: String): Bitmap? {
-        return bitmapCache.get(packageId) ?: run {
-            return synchronized(this) {
-                val cached = bitmapCache.get(packageId)
-                if (cached == null) {
-                    val newIcon = AppInfoDataLoader.imageIcon(context, packageId)?.toBitmap()?.also {
-                        bitmapCache.put(packageId, it)
-                    }
-                    newIcon
-                } else {
-                    cached
-                }
+        bitmapCache.get(packageId)?.let { return it }
+        synchronized(lockFor(packageId)) {
+            bitmapCache.get(packageId)?.let { return it }
+            val newIcon = AppInfoDataLoader.imageIcon(context, packageId)?.toBitmap()?.also {
+                bitmapCache.put(packageId, it)
             }
+            return newIcon
         }
     }
 }
