@@ -6,6 +6,11 @@ import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Build
 import ru.vkdev.greentest.repository_api.model.AppInfo
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
+import java.io.InputStream
 
 internal object AppInfoDataLoader {
 
@@ -57,4 +62,14 @@ internal object AppInfoDataLoader {
             context.packageManager.getApplicationInfo(packageId, 0)
         )
     }.getOrNull()
+
+    suspend fun <T> fileWithStream(context: Context, packageId: String, action: suspend (InputStream) -> T): T {
+        val apkFile = context.packageManager.getPackageInfo(packageId, 0).applicationInfo?.let {
+            File(it.sourceDir)
+        } ?: throw FileNotFoundException("Unable to find apk file for $packageId")
+
+        return BufferedInputStream(FileInputStream(apkFile), 64 * 1024).use { bis ->
+            action(bis)
+        }
+    }
 }

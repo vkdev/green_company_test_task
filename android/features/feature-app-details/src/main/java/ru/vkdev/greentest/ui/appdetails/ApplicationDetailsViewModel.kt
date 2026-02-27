@@ -5,14 +5,14 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.vkdev.greentest.repository_api.Repository
-import ru.vkdev.greentest.ui.appdetails.model.UiAppDetails
+import ru.vkdev.greentest.repository_api.model.HashAlgorithm
 import ru.vkdev.greentest.ui.appdetails.usecase.ApplicationLauncher
 
 internal class ApplicationDetailsViewModel(
@@ -39,15 +39,15 @@ internal class ApplicationDetailsViewModel(
             appsResult.onFailure {
                 applicationDetails.value = UiState.Error
             }.onSuccess {
-                applicationDetails.value = UiState.Success(
-                    UiAppDetails(
-                        appName = it.appName.orEmpty(),
-                        packageId = it.packageId,
-                        version = it.version.orEmpty(),
-                        versionCode = it.versionCode ?: 0L,
-                        hasLaunchedActivity = it.hasLaunchedActivity
-                    )
+                applicationDetails.value = UiState.UiAppDetails(
+                    appName = it.appName.orEmpty(),
+                    packageId = it.packageId,
+                    version = it.version.orEmpty(),
+                    versionCode = it.versionCode ?: 0L,
+                    hasLaunchedActivity = it.hasLaunchedActivity
                 )
+
+                statHashing()
             }
         }
     }
@@ -64,10 +64,35 @@ internal class ApplicationDetailsViewModel(
         }
     }
 
+    private fun statHashing() {
+        viewModelScope.launch {
+            repository.installedAppHash(context = application, packageId = packageId, HashAlgorithm.SHA256).onFailure {
+                Log.e(logTag, it.stackTraceToString())
+            }.onSuccess { hash ->
+                applicationDetails.update { value ->
+                    if (value is UiState.UiAppDetails) {
+                        value.copy(
+                            hashSum = hash.toHexString()
+                        )
+                    } else {
+                        value
+                    }
+                }
+            }
+        }
+    }
+
     internal sealed interface UiState {
         object Loading : UiState
         object Error : UiState
-        data class Success(val details: UiAppDetails) : UiState
+        data class UiAppDetails(
+            val appName: String,
+            val packageId: String,
+            val version: String,
+            val versionCode: Long,
+            val hasLaunchedActivity: Boolean,
+            val hashSum: String? = null
+        ) : UiState
     }
 
     sealed interface Intent {

@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import ru.vkdev.greentest.ui.appdetails.model.UiAppDetails
 import ru.vkdev.greentest.ui_common.dimen.DimensList
 import ru.vkdev.greentest.ui_common.dimen.DimensScreen
 
@@ -64,14 +63,14 @@ internal fun ApplicationDetailsScreenContent(
     when (state) {
         is ApplicationDetailsViewModel.UiState.Loading -> ApplicationDetailsLoading(modifier = modifier)
         is ApplicationDetailsViewModel.UiState.Error -> ApplicationDetailsError(modifier = modifier)
-        is ApplicationDetailsViewModel.UiState.Success -> ApplicationDetailsData(
+        is ApplicationDetailsViewModel.UiState.UiAppDetails -> ApplicationDetailsData(
             modifier = modifier,
-            details = (state as ApplicationDetailsViewModel.UiState.Success).details,
+            details = (state as ApplicationDetailsViewModel.UiState.UiAppDetails),
             requestDrawable = { packageId -> viewModel.requestAppIcon(packageId = packageId, maxSize = maxIconSize) },
             onOpenClick = {
                 viewModel.handleIntent(
                     ApplicationDetailsViewModel.Intent.LaunchAppIntent(
-                        (state as ApplicationDetailsViewModel.UiState.Success).details.packageId
+                        (state as ApplicationDetailsViewModel.UiState.UiAppDetails).packageId
                     )
                 )
             }
@@ -109,7 +108,7 @@ internal fun ApplicationDetailsError(modifier: Modifier) {
 @Composable
 internal fun ApplicationDetailsData(
     modifier: Modifier,
-    details: UiAppDetails,
+    details: ApplicationDetailsViewModel.UiState.UiAppDetails,
     requestDrawable: suspend (String) -> Bitmap?,
     onOpenClick: () -> Unit
 ) {

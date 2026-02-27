@@ -7,8 +7,10 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import ru.vkdev.greentest.cacheapi.InmemoryLruCache
+import ru.vkdev.greentest.hashfunction.HashFunction
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.AppInfo
+import ru.vkdev.greentest.repository_api.model.HashAlgorithm
 import ru.vkdev.repository.source.AppInfoDataLoader
 import ru.vkdev.repository.source.resizeBitmapIfNeeded
 import ru.vkdev.repository.source.toBitmap
@@ -28,6 +30,26 @@ class RepositoryImpl(
     override suspend fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo> = withContext(IO) {
         runCatching {
             AppInfoDataLoader.installedAppBaseInfo(context, packageId)
+        }
+    }
+
+    override suspend fun installedAppHash(
+        context: Context,
+        packageId: String,
+        algorithm: HashAlgorithm
+    ): Result<ByteArray> {
+
+        val hashFunction = when (algorithm) {
+            HashAlgorithm.MD5 -> HashFunction.md5()
+            HashAlgorithm.SHA256 -> HashFunction.sha256()
+        }
+
+        return withContext(IO) {
+            runCatching {
+                AppInfoDataLoader.fileWithStream(context, packageId) {
+                    hashFunction(it)
+                }
+            }
         }
     }
 
