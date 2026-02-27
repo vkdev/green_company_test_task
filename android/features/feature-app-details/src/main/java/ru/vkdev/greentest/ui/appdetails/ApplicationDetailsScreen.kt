@@ -51,7 +51,9 @@ internal fun ApplicationDetailsScreenContent(
     modifier: Modifier,
 
     packageId: String,
-    viewModel: ApplicationDetailsViewModel = koinViewModel(parameters = { parametersOf(packageId) })
+    viewModel: ApplicationDetailsViewModel = koinViewModel(
+        key = packageId,
+        parameters = { parametersOf(packageId) })
 ) {
     LaunchedEffect(viewModel) {
         viewModel.startLoading()
