@@ -2,6 +2,10 @@ package ru.vkdev.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import ru.vkdev.greentest.cacheapi.InmemoryLruCache
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.AppInfo
@@ -13,27 +17,31 @@ class RepositoryImpl(
     private val bitmapCache: InmemoryLruCache<String, Bitmap>
 ) : Repository {
 
-    private val iconLoadLocks = Array(32) { Any() }
+    private val iconLoadMutexes = Array(32) { Mutex() }
 
-    private fun lockFor(packageId: String): Any = iconLoadLocks[packageId.hashCode().and(0x0F)]
+    private fun mutexFor(packageId: String): Mutex = iconLoadMutexes[packageId.hashCode().and(0x1F /* 11111 */) /* даёт значение от 0 до 31, гарантированно попадаем в границы массива из 32 элементов. */]
 
-    //эти операции не suspend, так как по сути они все равно являются блокирующими
-    override fun installedAppsBaseInfo(context: Context): Result<List<AppInfo>> = runCatching { AppInfoDataLoader.installedAppsBaseInfo(context) }
-
-    override fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo> = runCatching {
-        AppInfoDataLoader.installedAppBaseInfo(context, packageId)
+    override suspend fun installedAppsBaseInfo(context: Context): Result<List<AppInfo>> = withContext(IO) {
+        runCatching { AppInfoDataLoader.installedAppsBaseInfo(context) }
     }
 
-    override fun imageIcon(context: Context, packageId: String, maxSize: Int): Bitmap? {
-        val hash = "${packageId}__size_${maxSize}"
-
-        bitmapCache.get(hash)?.let { return it }
-        synchronized(lockFor(hash)) {
-            bitmapCache.get(hash)?.let { return it }
-            val newIcon = AppInfoDataLoader.imageIcon(context, packageId)?.toBitmap()?.resizeBitmapIfNeeded(maxSize)?.also {
-                bitmapCache.put(hash, it)
-            }
-            return newIcon
+    override suspend fun installedAppBaseInfo(context: Context, packageId: String): Result<AppInfo> = withContext(IO) {
+        runCatching {
+            AppInfoDataLoader.installedAppBaseInfo(context, packageId)
         }
     }
+
+    override suspend fun imageIcon(context: Context, packageId: String, maxSize: Int): Bitmap? =
+        withContext(IO) {
+            val hash = "${packageId}__size_${maxSize}"
+
+            bitmapCache.get(hash)?.let { return@withContext it }
+            mutexFor(hash).withLock {
+                bitmapCache.get(hash)?.let { return@withLock it }
+                AppInfoDataLoader.imageIcon(context, packageId)
+                    ?.toBitmap()
+                    ?.resizeBitmapIfNeeded(maxSize)
+                    ?.also { bitmapCache.put(hash, it) }
+            }
+        }
 }
