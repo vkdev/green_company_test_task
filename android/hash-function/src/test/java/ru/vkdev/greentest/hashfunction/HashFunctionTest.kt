@@ -1,4 +1,4 @@
-package ru.vkdev.hashmaker
+package ru.vkdev.greentest.hashfunction
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals

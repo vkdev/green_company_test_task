@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "GreenTest"
 include(":app")
-include(":HashMaker")
+include(":hash-function")
 include(":features:feature-applications-list")
 include(":repository:repository-impl")
 include(":repository:repository-api")

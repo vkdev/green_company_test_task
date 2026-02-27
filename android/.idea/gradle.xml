@@ -10,7 +10,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/HashMaker" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/cache" />
             <option value="$PROJECT_DIR$/cache/cache-api" />
@@ -18,6 +17,7 @@
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/feature-app-details" />
             <option value="$PROJECT_DIR$/features/feature-applications-list" />
+            <option value="$PROJECT_DIR$/hash-function" />
             <option value="$PROJECT_DIR$/repository" />
             <option value="$PROJECT_DIR$/repository/repository-api" />
             <option value="$PROJECT_DIR$/repository/repository-impl" />
