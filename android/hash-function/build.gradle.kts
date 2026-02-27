@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.hashmaker"
+    namespace = "ru.vkdev.greentest.hashfunction"
     compileSdk {
         version = release(36)
     }
@@ -35,5 +35,6 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.coroutines.android)
     testImplementation(libs.junit)
 }
