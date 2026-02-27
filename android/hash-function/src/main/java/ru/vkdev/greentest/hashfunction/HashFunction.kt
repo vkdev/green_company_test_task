@@ -1,7 +1,9 @@
 package ru.vkdev.greentest.hashfunction
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.security.MessageDigest
 
@@ -21,11 +23,13 @@ internal abstract class JavaSecurityHashFunction(private val algorithm: String) 
 
     override suspend fun invoke(stream: InputStream): ByteArray {
         val digest = MessageDigest.getInstance(algorithm)
-        val buffer = ByteArray(16 * 1024)
+        val buffer = ByteArray(64 * 1024)
         var bytesRead: Int
         while (stream.read(buffer).also { bytesRead = it } != -1) {
             currentCoroutineContext().ensureActive()
-            digest.update(buffer, 0, bytesRead)
+            withContext(Dispatchers.Default) {
+                digest.update(buffer, 0, bytesRead)
+            }
         }
         return digest.digest()
     }
