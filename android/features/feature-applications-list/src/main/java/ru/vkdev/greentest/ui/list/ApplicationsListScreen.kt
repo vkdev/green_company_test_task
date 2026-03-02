@@ -64,7 +64,9 @@ internal fun ApplicationsListScreenContent(
 ) {
 
     LaunchedEffect(viewModel) {
-        viewModel.startLoading()
+        if (viewModel.uiState.value !is ApplicationsListViewModel.UiState.ScreenData) {
+            viewModel.startLoading()
+        }
     }
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
