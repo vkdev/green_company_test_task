@@ -16,7 +16,9 @@
             <option value="$PROJECT_DIR$/cache/cache-impl" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/feature-app-details" />
+            <option value="$PROJECT_DIR$/features/feature-app-details-api" />
             <option value="$PROJECT_DIR$/features/feature-applications-list" />
+            <option value="$PROJECT_DIR$/features/feature-applications-list-api" />
             <option value="$PROJECT_DIR$/features/navigation" />
             <option value="$PROJECT_DIR$/hash-function" />
             <option value="$PROJECT_DIR$/repository" />
