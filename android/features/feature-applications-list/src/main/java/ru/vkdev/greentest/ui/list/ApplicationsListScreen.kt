@@ -2,6 +2,7 @@ package ru.vkdev.greentest.ui.list
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -43,17 +44,23 @@ private val iconSize = 42.dp
 private val listItemHeight = 46.dp
 
 @Composable
-fun ApplicationsListScreen(paddingValues: PaddingValues) {
+fun ApplicationsListScreen(
+    paddingValues: PaddingValues,
+    onAppClick: (String) -> Unit = {}
+) {
     ApplicationsListScreenContent(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues)
+            .padding(paddingValues),
+        onAppClick = onAppClick
     )
 }
 
 @Composable
 internal fun ApplicationsListScreenContent(
-    modifier: Modifier, viewModel: ApplicationsListViewModel = koinViewModel(key = "ApplicationsListScreen")
+    modifier: Modifier,
+    onAppClick: (String) -> Unit,
+    viewModel: ApplicationsListViewModel = koinViewModel(key = "ApplicationsListScreen")
 ) {
 
     LaunchedEffect(viewModel) {
@@ -73,6 +80,7 @@ internal fun ApplicationsListScreenContent(
             onShowRunnableOnly = { onlyRunnable ->
                 viewModel.handleIntent(ApplicationsListViewModel.Intent.ShowRunnableOnlyIntent(onlyRunnable))
             },
+            onAppClick = onAppClick,
             requestAppIcon = { packageId ->
                 viewModel.requestAppIcon(packageId = packageId, maxSize = maxIconSize)
             }
@@ -85,7 +93,8 @@ internal fun ApplicationsListData(
     modifier: Modifier,
     data: ApplicationsListViewModel.UiState.ScreenData,
     requestAppIcon: suspend (String) -> Bitmap?,
-    onShowRunnableOnly: (Boolean) -> Unit
+    onShowRunnableOnly: (Boolean) -> Unit,
+    onAppClick: (String) -> Unit
 ) {
     Column(
         modifier = modifier.padding(horizontal = DimensScreen.paddingHorizontal, vertical = DimensScreen.paddingVertical)
@@ -107,9 +116,16 @@ internal fun ApplicationsListData(
         ) {
             items(
                 items = data.applications, key = { it.packageId }) { app ->
-                ListItem(item = app, requestDrawable = { packageId ->
-                    requestAppIcon(packageId)
-                })
+
+                ListItem(
+                    modifier = Modifier.clickable {
+                        onAppClick(app.packageId)
+                    },
+                    item = app,
+                    requestDrawable = { packageId ->
+                        requestAppIcon(packageId)
+                    }
+                )
             }
         }
     }
@@ -143,9 +159,14 @@ internal fun ApplicationsListError(modifier: Modifier) {
 }
 
 @Composable
-internal fun ListItem(item: ApplicationsListViewModel.UiAppInfo, requestDrawable: suspend (String) -> Bitmap?) {
+internal fun ListItem(
+    modifier: Modifier,
+    item: ApplicationsListViewModel.UiAppInfo,
+    requestDrawable: suspend (String) -> Bitmap?
+) {
     Card(
-        Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(DimensList.itemCardElevation)
+        modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(DimensList.itemCardElevation)
     ) {
         Row(
             Modifier
