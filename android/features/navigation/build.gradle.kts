@@ -45,4 +45,6 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
+    implementation(project(":features:feature-applications-list-api"))
+    implementation(project(":features:feature-app-details-api"))
 }

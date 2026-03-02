@@ -47,6 +47,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
+    implementation(libs.koin.compose)
+    implementation(libs.koin.compose.viewmodel)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
@@ -56,6 +58,7 @@ dependencies {
     implementation(project(":features:feature-applications-list"))
     implementation(project(":features:feature-app-details"))
     implementation(project(":cache:cache-impl"))
+    implementation(project(":features:navigation"))
 
     testImplementation(libs.junit)
     debugImplementation(libs.androidx.compose.runtime.tracing)

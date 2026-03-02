@@ -50,7 +50,8 @@ dependencies {
 
     implementation(project(":repository:repository-api"))
     implementation(project(":ui-common"))
-    implementation(project(":features:feature-applications-list-api"))
+
+    api(project(":features:feature-applications-list-api"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
