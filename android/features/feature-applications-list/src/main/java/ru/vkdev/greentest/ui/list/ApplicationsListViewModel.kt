@@ -75,6 +75,8 @@ internal class ApplicationsListViewModel(
         repository.imageIcon(context = application, packageId = packageId, maxSize = maxSize)
     }
 
+    internal fun isInitialized(): Boolean = uiState.value !is UiState.ScreenData
+
     private fun filterApplications(isRunnableOnly: Boolean) =
         if (isRunnableOnly) allApplications.filter { it.hasLaunchedActivity } else allApplications
 

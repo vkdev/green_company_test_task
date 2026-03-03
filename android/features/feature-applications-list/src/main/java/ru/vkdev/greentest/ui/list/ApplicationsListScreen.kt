@@ -64,7 +64,7 @@ internal fun ApplicationsListScreenContent(
 ) {
 
     LaunchedEffect(viewModel) {
-        if (viewModel.uiState.value !is ApplicationsListViewModel.UiState.ScreenData) {
+        if (!viewModel.isInitialized()) {
             viewModel.startLoading()
         }
     }
