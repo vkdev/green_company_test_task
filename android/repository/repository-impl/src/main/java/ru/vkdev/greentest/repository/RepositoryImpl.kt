@@ -1,4 +1,4 @@
-package ru.vkdev.repository
+package ru.vkdev.greentest.repository
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,9 +11,9 @@ import ru.vkdev.greentest.hashfunction.HashFunction
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.AppInfo
 import ru.vkdev.greentest.repository_api.model.HashAlgorithm
-import ru.vkdev.repository.source.AppInfoDataLoader
-import ru.vkdev.repository.source.resizeBitmapIfNeeded
-import ru.vkdev.repository.source.toBitmap
+import ru.vkdev.greentest.repository.source.AppInfoDataLoader
+import ru.vkdev.greentest.repository.source.resizeBitmapIfNeeded
+import ru.vkdev.greentest.repository.source.toBitmap
 
 class RepositoryImpl(
     private val bitmapCache: InmemoryLruCache<String, Bitmap>

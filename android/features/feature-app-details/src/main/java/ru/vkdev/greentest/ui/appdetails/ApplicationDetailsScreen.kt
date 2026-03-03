@@ -65,18 +65,19 @@ internal fun ApplicationDetailsScreenContent(
     when (state) {
         is ApplicationDetailsViewModel.UiState.Loading -> ApplicationDetailsLoading(modifier = modifier)
         is ApplicationDetailsViewModel.UiState.Error -> ApplicationDetailsError(modifier = modifier)
-        is ApplicationDetailsViewModel.UiState.UiAppDetails -> ApplicationDetailsData(
-            modifier = modifier,
-            details = (state as ApplicationDetailsViewModel.UiState.UiAppDetails),
-            requestDrawable = { packageId -> viewModel.requestAppIcon(packageId = packageId, maxSize = maxIconSize) },
-            onOpenClick = {
-                viewModel.handleIntent(
-                    ApplicationDetailsViewModel.Intent.LaunchAppIntent(
-                        (state as ApplicationDetailsViewModel.UiState.UiAppDetails).packageId
+        is ApplicationDetailsViewModel.UiState.UiAppDetails -> {
+            val details = state as ApplicationDetailsViewModel.UiState.UiAppDetails
+            ApplicationDetailsData(
+                modifier = modifier,
+                details = details,
+                requestDrawable = { pkgId -> viewModel.requestAppIcon(packageId = pkgId, maxSize = maxIconSize) },
+                onOpenClick = {
+                    viewModel.handleIntent(
+                        ApplicationDetailsViewModel.Intent.LaunchAppIntent(details.packageId)
                     )
-                )
-            }
-        )
+                }
+            )
+        }
     }
 }
 

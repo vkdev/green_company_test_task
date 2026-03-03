@@ -6,7 +6,7 @@ interface InmemoryLruCache<K, V> {
 
     fun get(key: K): V?
 
-    fun remove(key: String)
+    fun remove(key: K)
 
     fun size(): Int
 

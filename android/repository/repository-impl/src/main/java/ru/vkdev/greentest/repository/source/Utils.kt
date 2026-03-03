@@ -1,4 +1,4 @@
-package ru.vkdev.repository.source
+package ru.vkdev.greentest.repository.source
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable

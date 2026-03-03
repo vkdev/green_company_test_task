@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.repository"
+    namespace = "ru.vkdev.greentest.repository"
     compileSdk {
         version = release(36)
     }

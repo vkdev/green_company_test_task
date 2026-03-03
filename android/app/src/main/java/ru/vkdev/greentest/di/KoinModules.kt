@@ -11,7 +11,7 @@ import ru.vkdev.greentest.cache.BitmapLruCache
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.ui.appdetails.di.featureApplicationDetailsModule
 import ru.vkdev.greentest.ui.list.di.featureApplicationsListViewModelModule
-import ru.vkdev.repository.RepositoryImpl
+import ru.vkdev.greentest.repository.RepositoryImpl
 
 @Synchronized
 fun Application.startKoinIfNotStarted() {
