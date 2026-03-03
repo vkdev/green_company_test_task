@@ -27,6 +27,9 @@ internal abstract class JavaSecurityHashFunction(private val algorithm: String) 
         var bytesRead: Int
         while (stream.read(buffer).also { bytesRead = it } != -1) {
             currentCoroutineContext().ensureActive()
+            //в целом я бы остпаил здесь IO, так как это легкая операция,
+            //но здесь я хочу показать "представим, что эта операция тяжелая
+            // и переключение диспатчеров не играет роли"
             withContext(Dispatchers.Default) {
                 digest.update(buffer, 0, bytesRead)
             }
