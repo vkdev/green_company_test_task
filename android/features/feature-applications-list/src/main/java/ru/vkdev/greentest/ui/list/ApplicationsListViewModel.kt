@@ -7,6 +7,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +17,7 @@ import kotlinx.coroutines.withContext
 import ru.vkdev.greentest.repository_api.Repository
 
 internal class ApplicationsListViewModel(
-    private val repository: Repository, app: Application
+    private val repository: Repository, app: Application,
 ) : AndroidViewModel(app) {
 
     private val logTag = this::class.simpleName
@@ -24,6 +26,9 @@ internal class ApplicationsListViewModel(
 
     val uiState: StateFlow<UiState>
         field = MutableStateFlow<UiState>(UiState.Loading)
+
+    val navigationEvents: Flow<String>
+        field = MutableSharedFlow<String>()
 
     private fun updateStateWithData(runnableOnly: Boolean? = null) {
         uiState.update { existing ->
@@ -59,6 +64,7 @@ internal class ApplicationsListViewModel(
         when (intent) {
             is Intent.ShowRunnableOnlyIntent -> {
                 if (uiState.value is UiState.ScreenData) {
+                    Log.i(logTag, "Show only runnable: ${intent.isRunnableOnly}")
                     updateStateWithData(intent.isRunnableOnly)
                 } else {
                     Log.w(logTag, "Invalid UI state")
@@ -66,7 +72,9 @@ internal class ApplicationsListViewModel(
             }
 
             is Intent.OpenDetailsScreenIntent -> {
-                //todo
+                viewModelScope.launch {
+                    navigationEvents.emit(intent.uiAppInfo.packageId)
+                }
             }
         }
     }

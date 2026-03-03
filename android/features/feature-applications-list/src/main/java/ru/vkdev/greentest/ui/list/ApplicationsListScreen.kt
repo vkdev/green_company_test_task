@@ -69,6 +69,12 @@ internal fun ApplicationsListScreenContent(
         }
     }
 
+    LaunchedEffect(viewModel) {
+        viewModel.navigationEvents.collect { packageId ->
+            onAppClick(packageId)
+        }
+    }
+
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     val maxIconSize = with(LocalDensity.current) { iconSize.roundToPx() }
@@ -82,7 +88,9 @@ internal fun ApplicationsListScreenContent(
             onShowRunnableOnly = { onlyRunnable ->
                 viewModel.handleIntent(ApplicationsListViewModel.Intent.ShowRunnableOnlyIntent(onlyRunnable))
             },
-            onAppClick = onAppClick,
+            onAppClick = { appInfo ->
+                viewModel.handleIntent(ApplicationsListViewModel.Intent.OpenDetailsScreenIntent(appInfo))
+            },
             requestAppIcon = { packageId ->
                 viewModel.requestAppIcon(packageId = packageId, maxSize = maxIconSize)
             }
@@ -96,7 +104,7 @@ internal fun ApplicationsListData(
     data: ApplicationsListViewModel.UiState.ScreenData,
     requestAppIcon: suspend (String) -> Bitmap?,
     onShowRunnableOnly: (Boolean) -> Unit,
-    onAppClick: (String) -> Unit
+    onAppClick: (ApplicationsListViewModel.UiAppInfo) -> Unit
 ) {
     Column(
         modifier = modifier.padding(horizontal = DimensScreen.paddingHorizontal, vertical = DimensScreen.paddingVertical)
@@ -121,7 +129,7 @@ internal fun ApplicationsListData(
 
                 ListItem(
                     modifier = Modifier.clickable {
-                        onAppClick(app.packageId)
+                        onAppClick(app)
                     },
                     item = app,
                     requestDrawable = { packageId ->
