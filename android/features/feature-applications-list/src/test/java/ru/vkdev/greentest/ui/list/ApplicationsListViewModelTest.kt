@@ -2,19 +2,15 @@ package ru.vkdev.greentest.ui.list
 
 import android.app.Application
 import android.graphics.Bitmap
-import android.util.Log
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import ru.vkdev.greentest.logger.Logger
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.AppInfo
 
@@ -22,20 +18,13 @@ class ApplicationsListViewModelTest {
 
     private lateinit var repository: Repository
     private lateinit var application: Application
+    private lateinit var logger: Logger
 
     @Before
     fun setUp() {
-        mockkStatic(Log::class)
-        every { Log.e(any(), any<String>()) } returns 0
-        every { Log.e(any(), any<String>(), any<Throwable>()) } returns 0
-        every { Log.w(any(), any<String>()) } returns 0
         repository = mockk(relaxed = true)
         application = mockk(relaxed = true)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkStatic(Log::class)
+        logger = mockk(relaxed = true)
     }
 
     @Test
@@ -46,7 +35,7 @@ class ApplicationsListViewModelTest {
         )
         coEvery { repository.installedAppsBaseInfo(any()) } returns Result.success(appList)
 
-        val viewModel = ApplicationsListViewModel(repository = repository, app = application)
+        val viewModel = ApplicationsListViewModel(repository = repository, logger = logger, app = application)
 
         viewModel.startLoading()
         delay(150)
@@ -68,7 +57,7 @@ class ApplicationsListViewModelTest {
         coEvery { repository.installedAppsBaseInfo(any()) } returns
             Result.failure(RuntimeException("Load failed"))
 
-        val viewModel = ApplicationsListViewModel(repository = repository, app = application)
+        val viewModel = ApplicationsListViewModel(repository = repository, logger = logger, app = application)
 
         viewModel.startLoading()
         delay(150)
@@ -84,7 +73,7 @@ class ApplicationsListViewModelTest {
         )
         coEvery { repository.installedAppsBaseInfo(any()) } returns Result.success(appList)
 
-        val viewModel = ApplicationsListViewModel(repository = repository, app = application)
+        val viewModel = ApplicationsListViewModel(repository = repository, logger = logger, app = application)
 
         viewModel.startLoading()
         delay(150)
@@ -102,7 +91,7 @@ class ApplicationsListViewModelTest {
         )
         coEvery { repository.installedAppsBaseInfo(any()) } returns Result.success(appList)
 
-        val viewModel = ApplicationsListViewModel(repository = repository, app = application)
+        val viewModel = ApplicationsListViewModel(repository = repository, logger = logger, app = application)
         viewModel.startLoading()
         delay(150)
 
@@ -122,7 +111,7 @@ class ApplicationsListViewModelTest {
         )
         coEvery { repository.installedAppsBaseInfo(any()) } returns Result.success(appList)
 
-        val viewModel = ApplicationsListViewModel(repository = repository, app = application)
+        val viewModel = ApplicationsListViewModel(repository = repository, logger = logger, app = application)
         viewModel.startLoading()
         delay(150)
 
@@ -138,7 +127,7 @@ class ApplicationsListViewModelTest {
         val bitmap = mockk<Bitmap>(relaxed = true)
         coEvery { repository.imageIcon(any(), "com.test", 64) } returns bitmap
 
-        val viewModel = ApplicationsListViewModel(repository = repository, app = application)
+        val viewModel = ApplicationsListViewModel(repository = repository, logger = logger, app = application)
 
         val result = viewModel.requestAppIcon("com.test", 64)
 

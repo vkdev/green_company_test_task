@@ -2,20 +2,17 @@ package ru.vkdev.greentest.ui.appdetails
 
 import android.app.Application
 import android.graphics.Bitmap
-import android.util.Log
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import ru.vkdev.greentest.logger.Logger
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.AppInfo
 import ru.vkdev.greentest.repository_api.model.HashAlgorithm
@@ -26,21 +23,15 @@ class ApplicationDetailsViewModelTest {
     private lateinit var repository: Repository
     private lateinit var applicationLauncher: ApplicationLauncher
     private lateinit var application: Application
+    private lateinit var logger: Logger
     private val packageId = "com.test.app"
 
     @Before
     fun setUp() {
-        mockkStatic(Log::class)
-        every { Log.e(any(), any<String>()) } returns 0
-        every { Log.e(any(), any<String>(), any<Throwable>()) } returns 0
         repository = mockk(relaxed = true)
         application = mockk(relaxed = true)
         applicationLauncher = mockk(relaxed = true)
-    }
-
-    @After
-    fun tearDown() {
-        unmockkStatic(Log::class)
+        logger = mockk(relaxed = true)
     }
 
     @Test
@@ -60,6 +51,7 @@ class ApplicationDetailsViewModelTest {
             app = application,
             repository = repository,
             applicationLauncher = applicationLauncher,
+            logger = logger,
             packageId = packageId
         )
 
@@ -85,6 +77,7 @@ class ApplicationDetailsViewModelTest {
             app = application,
             repository = repository,
             applicationLauncher = applicationLauncher,
+            logger = logger,
             packageId = packageId
         )
 
@@ -112,6 +105,7 @@ class ApplicationDetailsViewModelTest {
             app = application,
             repository = repository,
             applicationLauncher = applicationLauncher,
+            logger = logger,
             packageId = packageId
         )
 
@@ -133,6 +127,7 @@ class ApplicationDetailsViewModelTest {
             app = application,
             repository = repository,
             applicationLauncher = applicationLauncher,
+            logger = logger,
             packageId = packageId
         )
 
@@ -150,6 +145,7 @@ class ApplicationDetailsViewModelTest {
             app = application,
             repository = repository,
             applicationLauncher = applicationLauncher,
+            logger = logger,
             packageId = packageId
         )
 
