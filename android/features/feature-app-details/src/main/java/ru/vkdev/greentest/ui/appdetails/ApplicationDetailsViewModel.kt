@@ -1,7 +1,6 @@
 package ru.vkdev.greentest.ui.appdetails
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
 import androidx.lifecycle.viewModelScope
@@ -11,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.vkdev.greentest.logging.Logger
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.HashAlgorithm
 import ru.vkdev.greentest.ui.appdetails.usecase.ApplicationLauncher
@@ -19,10 +19,11 @@ internal class ApplicationDetailsViewModel(
     app: Application,
     private val repository: Repository,
     private val applicationLauncher: ApplicationLauncher,
-    val packageId: String
+    private val logger: Logger,
+    private val packageId: String
 ) : AndroidViewModel(app) {
 
-    private val logTag = this::class.simpleName
+    private val logTag: String = this::class.simpleName ?: "ApplicationDetailsViewModel"
 
     val applicationDetails: StateFlow<UiState>
         field = MutableStateFlow<UiState>(UiState.Loading)
@@ -33,7 +34,7 @@ internal class ApplicationDetailsViewModel(
             applicationDetails.value = UiState.Loading
 
             val appsResult = repository.installedAppBaseInfo(application, packageId).onFailure {
-                Log.e(logTag, it.stackTraceToString())
+                logger.e(logTag, it.stackTraceToString())
             }
 
             appsResult.onFailure {
@@ -67,7 +68,7 @@ internal class ApplicationDetailsViewModel(
     private fun startHashing() {
         viewModelScope.launch {
             repository.installedAppHash(context = application, packageId = packageId, HashAlgorithm.SHA256).onFailure {
-                Log.e(logTag, it.stackTraceToString())
+                logger.e(logTag, it.stackTraceToString())
             }.onSuccess { hash ->
                 applicationDetails.update { value ->
                     if (value is UiState.UiAppDetails) {

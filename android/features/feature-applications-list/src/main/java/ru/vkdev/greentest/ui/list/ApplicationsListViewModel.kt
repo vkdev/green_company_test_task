@@ -1,7 +1,6 @@
 package ru.vkdev.greentest.ui.list
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.application
@@ -14,13 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.vkdev.greentest.logging.Logger
 import ru.vkdev.greentest.repository_api.Repository
 
 internal class ApplicationsListViewModel(
-    private val repository: Repository, app: Application,
+    private val repository: Repository,
+    private val logger: Logger,
+    app: Application,
 ) : AndroidViewModel(app) {
 
-    private val logTag = this::class.simpleName
+    private val logTag = this::class.simpleName ?: "ApplicationsListViewModel"
 
     private var allApplications: List<UiAppInfo> = emptyList()
 
@@ -46,7 +48,7 @@ internal class ApplicationsListViewModel(
         viewModelScope.launch(IO) {
             repository.installedAppsBaseInfo(application)
                 .onFailure { error ->
-                    Log.e(logTag, error.stackTraceToString())
+                    logger.e(logTag, "unable to load app info", error)
                     allApplications = emptyList()
 
                     uiState.emit(UiState.Error)
@@ -64,10 +66,10 @@ internal class ApplicationsListViewModel(
         when (intent) {
             is Intent.ShowRunnableOnlyIntent -> {
                 if (uiState.value is UiState.ScreenData) {
-                    Log.i(logTag, "Show only runnable: ${intent.isRunnableOnly}")
+                    logger.i(logTag, "Show only runnable: ${intent.isRunnableOnly}")
                     updateStateWithData(intent.isRunnableOnly)
                 } else {
-                    Log.w(logTag, "Invalid UI state")
+                    logger.w(logTag, "Invalid UI state")
                 }
             }
 
