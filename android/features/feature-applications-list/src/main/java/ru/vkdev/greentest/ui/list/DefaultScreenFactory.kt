@@ -2,7 +2,7 @@ package ru.vkdev.greentest.ui.list
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import ru.vkdev.greentest.iu.api.list.ApplicationsListScreenFactory
+import ru.vkdev.greentest.ui.api.list.ApplicationsListScreenFactory
 
 private class DefaultScreenFactory : ApplicationsListScreenFactory {
     @Composable

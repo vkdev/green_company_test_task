@@ -1,4 +1,4 @@
-package ru.vkdev.greentest.iu.api.appdetails
+package ru.vkdev.greentest.ui.api.appdetails
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable

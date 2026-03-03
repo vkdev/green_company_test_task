@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.greentest.iu.api.list"
+    namespace = "ru.vkdev.greentest.ui.api.list"
     compileSdk {
         version = release(36)
     }

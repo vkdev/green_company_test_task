@@ -47,7 +47,7 @@ internal class ApplicationDetailsViewModel(
                     hasLaunchedActivity = it.hasLaunchedActivity
                 )
 
-                statHashing()
+                startHashing()
             }
         }
     }
@@ -64,7 +64,7 @@ internal class ApplicationDetailsViewModel(
         }
     }
 
-    private fun statHashing() {
+    private fun startHashing() {
         viewModelScope.launch {
             repository.installedAppHash(context = application, packageId = packageId, HashAlgorithm.SHA256).onFailure {
                 Log.e(logTag, it.stackTraceToString())

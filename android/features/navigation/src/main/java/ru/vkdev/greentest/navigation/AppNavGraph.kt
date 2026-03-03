@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
-import ru.vkdev.greentest.iu.api.appdetails.ApplicationDetailsScreenFactory
-import ru.vkdev.greentest.iu.api.list.ApplicationsListScreenFactory
+import ru.vkdev.greentest.ui.api.appdetails.ApplicationDetailsScreenFactory
+import ru.vkdev.greentest.ui.api.list.ApplicationsListScreenFactory
 
 @Suppress("MutableParameter")
 @Composable
