@@ -41,6 +41,4 @@ dependencies {
     api(project(":cache:cache-api"))
 
     implementation(project(":hash-function"))
-
-    testImplementation(libs.junit)
 }
