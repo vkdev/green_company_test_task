@@ -1,4 +1,4 @@
-package ru.vkdev.greentest.ui.theme
+package ru.vkdev.greentest.ui_common.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

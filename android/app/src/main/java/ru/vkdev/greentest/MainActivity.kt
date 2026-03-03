@@ -14,7 +14,7 @@ import ru.vkdev.greentest.navigation.AppNavGraph
 import ru.vkdev.greentest.navigation.NavKey
 import ru.vkdev.greentest.ui.appdetails.applicationDetailsScreenFactory
 import ru.vkdev.greentest.ui.list.applicationsListScreenFactory
-import ru.vkdev.greentest.ui.theme.GreenTestTheme
+import ru.vkdev.greentest.ui_common.theme.GreenTestTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
