@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/features/feature-applications-list-api" />
             <option value="$PROJECT_DIR$/features/navigation" />
             <option value="$PROJECT_DIR$/hash-function" />
+            <option value="$PROJECT_DIR$/logging" />
             <option value="$PROJECT_DIR$/repository" />
             <option value="$PROJECT_DIR$/repository/repository-api" />
             <option value="$PROJECT_DIR$/repository/repository-impl" />

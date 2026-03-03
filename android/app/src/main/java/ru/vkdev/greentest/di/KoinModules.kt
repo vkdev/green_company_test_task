@@ -6,12 +6,13 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
-import ru.vkdev.greentest.cacheapi.InmemoryLruCache
 import ru.vkdev.greentest.cache.BitmapLruCache
+import ru.vkdev.greentest.cacheapi.InmemoryLruCache
+import ru.vkdev.greentest.logging.AndroidLogger
+import ru.vkdev.greentest.repository.RepositoryImpl
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.ui.appdetails.di.featureApplicationDetailsModule
 import ru.vkdev.greentest.ui.list.di.featureApplicationsListViewModelModule
-import ru.vkdev.greentest.repository.RepositoryImpl
 
 @Synchronized
 fun Application.startKoinIfNotStarted() {
@@ -22,15 +23,19 @@ fun Application.startKoinIfNotStarted() {
         androidContext(applicationContext)
 
         modules(
-
+            loggerModule,
             cacheModule,
             repositoryModule,
 
             //feature modules
             featureApplicationsListViewModelModule,
-            featureApplicationDetailsModule
+            featureApplicationDetailsModule,
         )
     }
+}
+
+val loggerModule = module {
+    single<ru.vkdev.greentest.logging.Logger> { AndroidLogger() }
 }
 
 val cacheModule = module {
