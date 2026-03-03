@@ -52,4 +52,8 @@ dependencies {
     implementation(project(":ui-common"))
 
     api(project(":features:feature-app-details-api"))
+
+    testImplementation(libs.junit)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.mockk)
 }
