@@ -8,7 +8,7 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import ru.vkdev.greentest.cache.BitmapLruCache
 import ru.vkdev.greentest.cacheapi.InmemoryLruCache
-import ru.vkdev.greentest.logging.AndroidLogger
+import ru.vkdev.greentest.logger.android.AndroidLogger
 import ru.vkdev.greentest.repository.RepositoryImpl
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.ui.appdetails.di.featureApplicationDetailsModule
@@ -35,7 +35,7 @@ fun Application.startKoinIfNotStarted() {
 }
 
 val loggerModule = module {
-    single<ru.vkdev.greentest.logging.Logger> { AndroidLogger() }
+    single<ru.vkdev.greentest.logger.Logger> { AndroidLogger() }
 }
 
 val cacheModule = module {

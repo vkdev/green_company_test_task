@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vkdev.greentest.logging"
+    namespace = "ru.vkdev.greentest.logger"
     compileSdk {
         version = release(36)
     }
@@ -28,6 +28,7 @@ android {
     }
 }
 
+
 kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
@@ -35,5 +36,5 @@ kotlin {
 }
 
 dependencies {
-
+    api(project(":logging:logging-api"))
 }

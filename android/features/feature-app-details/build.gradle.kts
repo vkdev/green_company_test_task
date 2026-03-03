@@ -50,7 +50,7 @@ dependencies {
 
     implementation(project(":repository:repository-api"))
     implementation(project(":ui-common"))
-    implementation(project(":logging"))
+    implementation(project(":logging:logging-api"))
 
     api(project(":features:feature-app-details-api"))
 

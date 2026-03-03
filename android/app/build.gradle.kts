@@ -54,8 +54,8 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)
+    implementation(project(":logging:logging-android"))
 
-    implementation(project(":logging"))
     implementation(project(":ui-common"))
     implementation(project(":repository:repository-impl"))
     implementation(project(":features:feature-applications-list"))

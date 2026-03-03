@@ -1,4 +1,4 @@
-package ru.vkdev.greentest.logging
+package ru.vkdev.greentest.logger
 
 interface Logger {
     fun i(tag: String, messgae: String)

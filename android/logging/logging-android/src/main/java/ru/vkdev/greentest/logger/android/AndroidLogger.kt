@@ -1,6 +1,7 @@
-package ru.vkdev.greentest.logging
+package ru.vkdev.greentest.logger.android
 
 import android.util.Log
+import ru.vkdev.greentest.logger.Logger
 
 class AndroidLogger : Logger {
     override fun i(tag: String, messgae: String) {

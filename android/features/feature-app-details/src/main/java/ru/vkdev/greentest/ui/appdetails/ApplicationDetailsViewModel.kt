@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.vkdev.greentest.logging.Logger
+import ru.vkdev.greentest.logger.Logger
 import ru.vkdev.greentest.repository_api.Repository
 import ru.vkdev.greentest.repository_api.model.HashAlgorithm
 import ru.vkdev.greentest.ui.appdetails.usecase.ApplicationLauncher
